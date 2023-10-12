@@ -1,19 +1,19 @@
 const Sequelize = require('sequelize');
+require('dotenv').config();
 
 module.exports.handler = async (event) => {
 	deuBom = '';
-	const sequelize = new Sequelize('postgres', 'michel', '4mazz0n!', {
-		host: 'business-analyzer.crrkmjqebzph.us-east-1.rds.amazonaws.com',
+	const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, process.env.PASSWORD, {
+		host: process.env.HOST,
 		dialect: 'postgres',
 		dialectOptions: {
 			ssl: {
-				require: true, 
-				rejectUnauthorized: false 
+				require: true,
+				rejectUnauthorized: false
 			}
 		},
 		port: 5432,
 	});
-
 
 	try {
 		await sequelize.authenticate();
