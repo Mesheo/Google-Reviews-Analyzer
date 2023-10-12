@@ -1,0 +1,16 @@
+org: mesheo
+app: google-reviews-analyzer
+service: google-reviews-analyzer
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
