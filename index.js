@@ -3,18 +3,20 @@ const URL = "https://www.google.com.br/maps/place/Nema+Padaria+-+Niter%C3%B3i/@-
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
-const { sequelize : dbClient} = require('./database/db');
+const dbClient = require('./database/db');
 const Sequelize = require('sequelize')
+const reviewsCreationFunction = require('./models/reviews');
 
-const Reviewsfumc  = require('./models/reviews'); // Importe o modelo Reviews
+dbClient.connect();
+const Reviews = reviewsCreationFunction(dbClient.sequelize, Sequelize);
 
 function createReviewHash(reviewInfo) {
 	const reviewData = `${reviewInfo.author}${reviewInfo.stars}${reviewInfo.publishedAt}${reviewInfo.reviewText}${reviewInfo.hasPhoto}`;
-  
+
 	const hash = crypto.createHash('sha256');
 	hash.update(reviewData);
-  	const reviewHash = hash.digest('hex');
-  
+	const reviewHash = hash.digest('hex');
+
 	return reviewHash;
 }
 
@@ -23,29 +25,29 @@ async function extractReviewInfo(page) {
 	await page.waitForSelector(reviewSelector);
 
 	const pageContent = await page.content();
-	const $ =  cheerio.load(pageContent);
+	const $ = cheerio.load(pageContent);
 
-	$(reviewSelector).each((index, element) => {
-		const review = $(element);
-		const author = review.find('div.d4r55').text(); 
-		const stars = review.find('span.kvMYJc img').length; 
-		const publishedAt = review.find('span.rsqaWe').text(); 
-		const reviewText = review.find('span.wiI7pd').text(); 
-		const hasPhoto = review.find('button.WEBjve img').length > 0; 
+	$(reviewSelector).each(async (index, element) => {
+		const reviewcAard= $(element);
+		const author = reviewcAard.find('div.d4r55').text();
+		const stars = reviewcAard.find('span.kvMYJc img').length;
+		const reviewDate = reviewcAard.find('span.rsqaWe').text();
+		const reviewText = reviewcAard.find('span.wiI7pd').text();
+		const hasPhoto = reviewcAard.find('button.WEBjve img').length > 0;
 
 		const reviewInfo = {
 			author,
 			stars,
-			publishedAt,
+			reviewDate,
 			reviewText,
 			hasPhoto,
-		};
+			
+		}
+
 		const reviewHash = createReviewHash(reviewInfo)
-		console.log({
-			reviewInfo,
-			reviewHash
-		})
-		return "a"
+
+		const review = await Reviews.create({...reviewInfo, reviewHash});
+		console.log("[WEBSCRAPER - ExtractReviewInfo] New Review added on database: ", review.dataValues)
 	});
 }
 
@@ -102,9 +104,7 @@ async function scraper(url) {
 		const reviewsSelector = '.MyEned .wiI7pd'
 		await page.click(avaliacoesSelector);
 		await page.waitForSelector(reviewsSelector, { visible: true });
-		const reviewInfo = await extractReviewInfo(page);
-		console.log("[WEBSCRAPER] - ReviewInfo Data fetched:  ", reviewInfo);
-
+		await extractReviewInfo(page);
 		// await browser.close();
 	} catch (e) {
 		console.error("Error occurred: ", e);
@@ -112,32 +112,9 @@ async function scraper(url) {
 }
 
 module.exports.handler = async (event) => {
-	try {
-		await dbClient.authenticate();
-		console.log('Connection has been established successfully.');
-		deuBom = "CONECTAMOS!!"
 	
-		await dbClient.sync();
-		console.log('Modelo sincronizado com o banco de dados.');
 
-		const Reviews = Reviewsfumc(dbClient, Sequelize);
-
-		const reviewInfo =  {
-			author: "Eu",
-			stars: 4,
-			reviewDate: "um mes atras",
-			reviewText: "aasdasda",
-			hasPhoto: false,
-		}
-		const review = await Reviews.create(reviewInfo);
-		console.log("REVIEW criada: ", review);
-	
-	} catch (error) {
-		console.error('Unable to connect to the database:', error);
-	} finally {
-		dbClient.close();
-	}
-	 // await scraper(URL);
+ 	await scraper(URL);
 
 	return {
 		statusCode: 200,

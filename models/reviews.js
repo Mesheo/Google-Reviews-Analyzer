@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     businessId: DataTypes.INTEGER,
     stars: DataTypes.INTEGER,
-    reviewText: DataTypes.STRING,
+    reviewText: DataTypes.STRING(1000),
     reviewDate: DataTypes.STRING,
     author: DataTypes.STRING,
     hasPhoto: DataTypes.BOOLEAN,
-    hash: DataTypes.STRING
+    reviewHash: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Reviews',

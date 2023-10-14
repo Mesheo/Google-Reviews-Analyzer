@@ -13,6 +13,17 @@ const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, proc
     port: 5432,
 });
 
+async function connect(){
+    try{
+        await sequelize.authenticate();
+		console.log('Connection has been established successfully.');
+	
+		await sequelize.sync();
+		console.log('Modelo sincronizado com o banco de dados.');
+    } catch (error) {
+		console.error('Unable to connect to the database:', error);
+	}
+}
 
 
-module.exports = { sequelize }
+module.exports = { sequelize, connect }
