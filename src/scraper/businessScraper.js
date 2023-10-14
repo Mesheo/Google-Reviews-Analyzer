@@ -1,12 +1,10 @@
 const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
-const dbClient = require('../../database/db');
 const businessCreationFunction = require('../../models/business');
+const Sequelize = require('sequelize');
 
+module.exports = async function extractBusinessInfo(page, sequelize) {
+    const Business = businessCreationFunction(sequelize, Sequelize);
 
-
-
-module.exports = async function extractBusinessInfo(page) {
     const topInfoDiv = await page.$eval('.TIHn2', (element) => element.innerHTML);
     const $ = cheerio.load(topInfoDiv);
 
@@ -43,6 +41,8 @@ module.exports = async function extractBusinessInfo(page) {
         ratingsAverage,
         numberOfReviews,
     }
-    console.log("[WEBSCRAPER - extractbusinessInfo] Data Succesfully fetched: ", businessInfo);
-    return businessInfo
+    console.log("[WEBSCRAPER - Business Scraper] Data Succesfully fetched: ", businessInfo);
+
+    const business = await Business.create(businessInfo);
+    console.log("[WEBSCRAPER - Business Scraper] Data Succesfully saved: ", business.dataValues);
 }
