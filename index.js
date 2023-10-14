@@ -2,6 +2,40 @@ const URL = "https://www.google.com.br/maps/place/Nema+Padaria+-+Niter%C3%B3i/@-
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
+async function extractReviewInfo(page) {
+	const reviewSelector = '.jftiEf.fontBodyMedium';
+	await page.waitForSelector(reviewSelector);
+
+	const pageContent = await page.content();
+	const $ =  cheerio.load(pageContent);
+
+	$(reviewSelector).each((index, element) => {
+		const review = $(element);
+		const author = review.find('div.d4r55').text(); 
+		const stars = review.find('span.kvMYJc img').length; 
+		const publishedAt = review.find('span.rsqaWe').text(); 
+		const reviewText = review.find('span.wiI7pd').text(); 
+		const hasPhoto = review.find('button.WEBjve img').length > 0; 
+
+		console.log(`Revisor: ${author}`);
+		console.log(`Quantidade de estrelas: ${stars}`);
+		console.log(`Data da Revisão: ${publishedAt}`);
+		console.log(`Texto da Revisão: ${reviewText}`);
+		console.log(`Tem Foto: ${hasPhoto}`);
+		console.log('-------------------');
+
+		return {
+			author,
+			stars,
+			publishedAt,
+			reviewText,
+			hasPhoto,
+		};
+	});
+}
+
+
+
 async function extractBusinessInfo(page) {
 	const topInfoDiv = await page.$eval('.TIHn2', (element) => element.innerHTML);
 	const $ = cheerio.load(topInfoDiv);
@@ -49,15 +83,14 @@ async function scraper(url) {
 
 		await page.goto(url);
 		await page.waitForSelector(avaliacoesSelector, { visible: true });
-		const businessInfo = await extractBusinessInfo(page);
-		console.log("[WEBSCRAPER] - BusinessInfo Data fetched:  ", businessInfo);
+		// const businessInfo = await extractBusinessInfo(page);
+		// console.log("[WEBSCRAPER] - BusinessInfo Data fetched:  ", businessInfo);
 
 		const reviewsSelector = '.MyEned .wiI7pd'
 		await page.click(avaliacoesSelector);
 		await page.waitForSelector(reviewsSelector, { visible: true });
-		await extractReviewInfo(page);
-
-
+		const reviewInfo = await extractReviewInfo(page);
+		console.log("[WEBSCRAPER] - ReviewInfo Data fetched:  ", reviewInfo);
 
 		// await browser.close();
 	} catch (e) {
