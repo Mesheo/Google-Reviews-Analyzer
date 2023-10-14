@@ -13,4 +13,6 @@ const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, proc
     port: 5432,
 });
 
-module.exports ={ sequelize }
+
+
+module.exports = { sequelize }

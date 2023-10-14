@@ -1,9 +1,10 @@
+require('dotenv').config();
 const URL = "https://www.google.com.br/maps/place/Nema+Padaria+-+Niter%C3%B3i/@-22.9039012,-43.113625,17z/data=!3m1!4b1!4m6!3m5!1s0x998373996a193f:0xb7ce627a8de35c77!8m2!3d-22.9039012!4d-43.113625!16s%2Fg%2F11k3fns4xy?entry=ttu";
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
-const Sequelize = require('sequelize');
-require('dotenv').config();
+const { sequelize : dbClient} = require('./database/db');
+const Sequelize = require('sequelize')
 
 const Reviewsfumc  = require('./models/reviews'); // Importe o modelo Reviews
 
@@ -112,23 +113,14 @@ async function scraper(url) {
 
 module.exports.handler = async (event) => {
 	try {
-		const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, process.env.PASSWORD, {
-			host: process.env.HOST,
-			dialect: 'postgres',
-			dialectOptions: {
-				ssl: {
-					require: true,
-					rejectUnauthorized: false
-				}
-			},
-			port: 5432,
-		});
-		await sequelize.authenticate();
+		await dbClient.authenticate();
 		console.log('Connection has been established successfully.');
 		deuBom = "CONECTAMOS!!"
 	
-		await sequelize.sync();
+		await dbClient.sync();
 		console.log('Modelo sincronizado com o banco de dados.');
+
+		const Reviews = Reviewsfumc(dbClient, Sequelize);
 
 		const reviewInfo =  {
 			author: "Eu",
@@ -137,15 +129,13 @@ module.exports.handler = async (event) => {
 			reviewText: "aasdasda",
 			hasPhoto: false,
 		}
-
-		const Reviews = Reviewsfumc(sequelize, Sequelize);
 		const review = await Reviews.create(reviewInfo);
 		console.log("REVIEW criada: ", review);
 	
 	} catch (error) {
 		console.error('Unable to connect to the database:', error);
 	} finally {
-		sequelize.close();
+		dbClient.close();
 	}
 	 // await scraper(URL);
 
