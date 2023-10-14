@@ -15,54 +15,20 @@ async function scraper(url) {
 		await page.waitForSelector(avaliacoesSelector, { visible: true });
 		await page.screenshot({ path: '1.png' })
 
-
-		// Encontre a div com a classe "TIHn2" e obtenha seu conteúdo HTML.
 		const divContent = await page.$eval('.TIHn2', (element) => element.innerHTML);
 		const $ = cheerio.load(divContent);
-		// Extrair o nome da loja
-		const nomeDaLoja = $('h1.DUwDvf').text();
-		console.log('O nome da loja:', nomeDaLoja);
 
-		// Extrair a média das avaliações
-		const mediaAvaliacoes = $('div.F7nice span[aria-hidden="true"]').text();
-		console.log('Média das avaliações:', mediaAvaliacoes);
-
-		// Extrair a quantidade de avaliações
-		const quantidadeAvaliacoes = $('div.F7nice span[aria-label^="2 avaliações"]').text();
-		console.log('Quantidade de avaliações:', quantidadeAvaliacoes);
-
-		// Extrair a categoria
-		const categoria = $('div.fontBodyMedium button.DkEaL').text();
-		console.log('Categoria:', categoria);
-
+		// GETTING BUSINESS INFO
+		const businessName = $('h1.DUwDvf').text();
+		const ratingsAverage = $('div.F7nice span[aria-hidden="true"]').text();
+		const numberOfReviews = $('div.F7nice span[aria-label^="2 avaliações"]').text();
+		const category = $('div.fontBodyMedium button.DkEaL').text();
+		console.log("Data obteined!! - ", { businessName, ratingsAverage, numberOfReviews, category})
 
 		// await page.click(avaliacoesSelector);
 
 		// await page.waitForSelector(reviewsSelector, { visible: true });
 		// await page.screenshot({ path: '2.png' })
-
-		const htmlDesejado = $('.lMbq3e');
-		console.log("HTML desejado \n", htmlDesejado)
-		const $$ = cheerio.load(htmlDesejado);
-
-		// Extraia as informações desejadas
-		const nomeNegocio = $$('h1.DUwDvf').text();
-		const mediaEstrelas = $$('span[aria-hidden="true"]').text();
-		const numAvaliacoes = $$('span[aria-label*="avaliações"]').text().match(/\d+/)[0];
-		const categoriaNegocio = $$('button[jsaction="pane.rating.category"]').text();
-
-		console.log('Nome do Negócio:', nomeNegocio);
-		console.log('Média de Estrelas:', mediaEstrelas);
-		console.log('Número de Avaliações:', numAvaliacoes);
-		console.log('Categoria do Negócio:', categoriaNegocio);
-
-
-		const text = await page.evaluate(() => {
-			const spanElement = document.querySelector('.MyEned .wiI7pd'); // Seleciona o span desejado
-			return spanElement.textContent; // Obtém o texto do span
-		});
-
-		console.log(text); // Exibe o texto no console
 	} catch (e) {
 		console.log("Deu merda>: ", e);
 	}
