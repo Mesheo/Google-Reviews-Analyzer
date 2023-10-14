@@ -15,7 +15,8 @@ function createReviewHash(reviewInfo) {
     return reviewHash;
 }
 
-module.exports = async function reviewScraper(page, businessId) {
+module.exports = async function reviewScraper(page, sequelize, businessId) {
+    console.log("!!Entrei no reviewScraper")
     let lastReviewHash = '';
     let shouldContinue = true;
     const Reviews = reviewsCreationFunction(sequelize, Sequelize)

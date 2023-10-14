@@ -45,4 +45,5 @@ module.exports = async function extractBusinessInfo(page, sequelize) {
 
     const business = await Business.create(businessInfo);
     console.log("[WEBSCRAPER - Business Scraper] Data Succesfully saved: ", business.dataValues);
+    return business
 }

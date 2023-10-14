@@ -15,12 +15,13 @@ async function scraper(url) {
 
 		const avaliacoesSelector = '.RWPxGd button:nth-child(2)';
 		await page.waitForSelector(avaliacoesSelector, { visible: true });
-		await businessScraper(page, dbClient.sequelize);
+		const { businessId } = await businessScraper(page, dbClient.sequelize);
 		
-		// await page.click(avaliacoesSelector);
-		// const reviewsSelector = '.MyEned .wiI7pd'
-		// await page.waitForSelector(reviewsSelector, { visible: true });
-		// await reviewScraper(page, 1);
+		await page.click(avaliacoesSelector);
+		const reviewsSelector = '.MyEned .wiI7pd'
+		await page.waitForSelector(reviewsSelector, { visible: true });
+		console.log("!!VOU entrar no review scraper")
+		await reviewScraper(page, dbClient.sequelize, businessId);
 	} catch (e) {
 		console.error("Error occurred: ", e);
 	}
