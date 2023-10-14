@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const reviewsCreationFunction = require('../models/reviews');
 require('dotenv').config();
 
 const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, process.env.PASSWORD, {
@@ -13,4 +14,6 @@ const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, proc
     port: 5432,
 });
 
-module.exports ={ sequelize }
+const Review = reviewsCreationFunction(sequelize, Sequelize);
+
+module.exports ={ Review }

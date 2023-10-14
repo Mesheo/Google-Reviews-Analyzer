@@ -2,6 +2,10 @@ const URL = "https://www.google.com.br/maps/place/Nema+Padaria+-+Niter%C3%B3i/@-
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
+const Sequelize = require('sequelize');
+require('dotenv').config();
+
+const Reviewsfumc  = require('./models/reviews'); // Importe o modelo Reviews
 
 function createReviewHash(reviewInfo) {
 	const reviewData = `${reviewInfo.author}${reviewInfo.stars}${reviewInfo.publishedAt}${reviewInfo.reviewText}${reviewInfo.hasPhoto}`;
@@ -43,8 +47,6 @@ async function extractReviewInfo(page) {
 		return "a"
 	});
 }
-
-
 
 async function extractBusinessInfo(page) {
 	const topInfoDiv = await page.$eval('.TIHn2', (element) => element.innerHTML);
@@ -109,7 +111,43 @@ async function scraper(url) {
 }
 
 module.exports.handler = async (event) => {
-	await scraper(URL);
+	try {
+		const sequelize = new Sequelize(process.env.DATABASE, process.env.USERNAME, process.env.PASSWORD, {
+			host: process.env.HOST,
+			dialect: 'postgres',
+			dialectOptions: {
+				ssl: {
+					require: true,
+					rejectUnauthorized: false
+				}
+			},
+			port: 5432,
+		});
+		await sequelize.authenticate();
+		console.log('Connection has been established successfully.');
+		deuBom = "CONECTAMOS!!"
+	
+		await sequelize.sync();
+		console.log('Modelo sincronizado com o banco de dados.');
+
+		const reviewInfo =  {
+			author: "Eu",
+			stars: 4,
+			reviewDate: "um mes atras",
+			reviewText: "aasdasda",
+			hasPhoto: false,
+		}
+
+		const Reviews = Reviewsfumc(sequelize, Sequelize);
+		const review = await Reviews.create(reviewInfo);
+		console.log("REVIEW criada: ", review);
+	
+	} catch (error) {
+		console.error('Unable to connect to the database:', error);
+	} finally {
+		sequelize.close();
+	}
+	 // await scraper(URL);
 
 	return {
 		statusCode: 200,
