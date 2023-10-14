@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     author: DataTypes.STRING,
     date: DataTypes.STRING,
     hasPhoto: DataTypes.BOOLEAN,
+    hash: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Reviews',

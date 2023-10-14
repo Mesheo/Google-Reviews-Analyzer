@@ -1,6 +1,17 @@
 const URL = "https://www.google.com.br/maps/place/Nema+Padaria+-+Niter%C3%B3i/@-22.9039012,-43.113625,17z/data=!3m1!4b1!4m6!3m5!1s0x998373996a193f:0xb7ce627a8de35c77!8m2!3d-22.9039012!4d-43.113625!16s%2Fg%2F11k3fns4xy?entry=ttu";
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+const crypto = require('crypto');
+
+function createReviewHash(reviewInfo) {
+	const reviewData = `${reviewInfo.author}${reviewInfo.stars}${reviewInfo.publishedAt}${reviewInfo.reviewText}${reviewInfo.hasPhoto}`;
+  
+	const hash = crypto.createHash('sha256');
+	hash.update(reviewData);
+  	const reviewHash = hash.digest('hex');
+  
+	return reviewHash;
+}
 
 async function extractReviewInfo(page) {
 	const reviewSelector = '.jftiEf.fontBodyMedium';
@@ -17,20 +28,19 @@ async function extractReviewInfo(page) {
 		const reviewText = review.find('span.wiI7pd').text(); 
 		const hasPhoto = review.find('button.WEBjve img').length > 0; 
 
-		console.log(`Revisor: ${author}`);
-		console.log(`Quantidade de estrelas: ${stars}`);
-		console.log(`Data da Revisão: ${publishedAt}`);
-		console.log(`Texto da Revisão: ${reviewText}`);
-		console.log(`Tem Foto: ${hasPhoto}`);
-		console.log('-------------------');
-
-		return {
+		const reviewInfo = {
 			author,
 			stars,
 			publishedAt,
 			reviewText,
 			hasPhoto,
 		};
+		const reviewHash = createReviewHash(reviewInfo)
+		console.log({
+			reviewInfo,
+			reviewHash
+		})
+		return "a"
 	});
 }
 
