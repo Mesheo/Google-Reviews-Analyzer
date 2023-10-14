@@ -15,14 +15,23 @@ async function scraper(url) {
 		await page.waitForSelector(avaliacoesSelector, { visible: true });
 		await page.screenshot({ path: '1.png' })
 
-		const divContent = await page.$eval('.TIHn2', (element) => element.innerHTML);
-		const $ = cheerio.load(divContent);
+		const topInfoContentDiv = await page.$eval('.TIHn2', (element) => element.innerHTML);
+		const $ = cheerio.load(topInfoContentDiv);
+	
 
-		// GETTING BUSINESS INFO
+		// GETTING TOP BUSINESS INFO
 		const businessName = $('h1.DUwDvf').text();
-		const ratingsAverage = $('div.F7nice span[aria-hidden="true"]').text();
-		const numberOfReviews = $('div.F7nice span[aria-label^="2 avaliações"]').text();
+		const ratingsAverage = parseFloat($('div.F7nice span[aria-hidden="true"]').text().replace(',', '.'));
+		const numberOfReviews = parseInt($("div.F7nice span[aria-label]").text().replace(/[()]/g, ''), 10);
 		const category = $('div.fontBodyMedium button.DkEaL').text();
+
+		// const botInfoContentDiv = await page.$eval('.TIHn2', (element) => element.innerHTML);
+		// console.log(botInfoContentDiv)
+		// const $$ = cheerio.load(botInfoContentDiv);
+
+
+
+		
 		console.log("Data obteined!! - ", { businessName, ratingsAverage, numberOfReviews, category})
 
 		// await page.click(avaliacoesSelector);
