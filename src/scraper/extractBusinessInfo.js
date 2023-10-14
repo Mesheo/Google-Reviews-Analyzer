@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const dbClient = require('../../database/db');
-const businessCreationFunction = require('../../models/businesses');
+const businessCreationFunction = require('../../models/business');
 
 
 

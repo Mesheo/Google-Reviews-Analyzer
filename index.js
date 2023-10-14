@@ -6,13 +6,13 @@ const crypto = require('crypto');
 const dbClient = require('./database/db');
 const Sequelize = require('sequelize')
 const reviewsCreationFunction = require('./models/reviews');
-const businessCreationFunction = require('./models/Businesses');
+const businessCreationFunction = require('./models/business');
 
 const extractBusinessInfo = require('./src/scraper/extractBusinessInfo')
 
 dbClient.connect();
 const Reviews = reviewsCreationFunction(dbClient.sequelize, Sequelize);
-const Businesses = businessCreationFunction(dbClient.sequelize, Sequelize);
+const Business = businessCreationFunction(dbClient.sequelize, Sequelize);
 
 function createReviewHash(reviewInfo) {
 	const reviewData = `${reviewInfo.author}${reviewInfo.stars}${reviewInfo.publishedAt}${reviewInfo.reviewText}${reviewInfo.hasPhoto}`;
@@ -81,8 +81,8 @@ async function scraper(url) {
 		const avaliacoesSelector = '.RWPxGd button:nth-child(2)';
 		await page.waitForSelector(avaliacoesSelector, { visible: true });
 		const businessInfo = await extractBusinessInfo(page);
-		console.log("Adding BusinessesInfo into Database!..")
-		const business = await Businesses.create(businessInfo);
+		console.log("Adding Business Info into Database!..")
+		const business = await Business.create(businessInfo);
 
 
 		console.log("TEMOS id?? :", business.businessId)
