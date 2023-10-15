@@ -4,6 +4,14 @@ const hashGenerator = require("../utils/hashGenerator");
 const Sequelize = require('sequelize');
 
 module.exports = async function reviewScraper(page, sequelize, businessId) {
+
+    const avaliacoesSelector = '.RWPxGd button:nth-child(2)';
+    await page.waitForSelector(avaliacoesSelector, { visible: true });
+    await page.click(avaliacoesSelector);
+    const reviewsSelector = '.MyEned .wiI7pd'
+    await page.waitForSelector(reviewsSelector, { visible: true });
+
+
     let shouldContinue = true;
     const Reviews = reviewsCreationFunction(sequelize, Sequelize)
 
