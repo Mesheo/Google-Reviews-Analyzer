@@ -3,7 +3,7 @@ const businessScraper = require('../scrapers/businessScraper')
 const reviewScraper = require('../scrapers/reviewScraper')
 const dbClient = require('../database/db');
 
-module.exports = async function scraper(url) {
+module.exports = async function crawler(url) {
 	try {
 		dbClient.connect();
 
