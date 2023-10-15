@@ -4,7 +4,6 @@ const puppeteer = require('puppeteer');
 const dbClient = require('./src/database/db');
 const businessScraper = require('./src/scraper/businessScraper')
 const reviewScraper = require('./src/scraper/reviewScraper')
-const Sequelize = require('sequelize')
 dbClient.connect();
 
 async function scraper(url) {

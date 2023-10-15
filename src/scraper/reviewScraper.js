@@ -1,9 +1,7 @@
 const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const reviewsCreationFunction = require('../../models/reviews');
 const Sequelize = require('sequelize');
-
 
 function createReviewHash(reviewInfo) {
     const reviewData = `${reviewInfo.author}${reviewInfo.stars}${reviewInfo.publishedAt}${reviewInfo.reviewText}${reviewInfo.hasPhoto}`;
@@ -16,8 +14,6 @@ function createReviewHash(reviewInfo) {
 }
 
 module.exports = async function reviewScraper(page, sequelize, businessId) {
-    console.log("!!Entrei no reviewScraper")
-    let lastReviewHash = '';
     let shouldContinue = true;
     const Reviews = reviewsCreationFunction(sequelize, Sequelize)
 
@@ -45,19 +41,29 @@ module.exports = async function reviewScraper(page, sequelize, businessId) {
                 hasPhoto,
                 businessId,
             }
-
+            console.log("\n[WEBSCRAPER ExtractReviewInfo] - Review data fetched susccefully", reviewInfo)
             const reviewHash = createReviewHash(reviewInfo)
 
-            if (lastReviewHash == reviewHash) {
-                console.log("[WEBSCRAPER ExtractReviewInfo] - Review already exist on DB, crawler will stop.");
+            const [review, isCreated] = await Reviews.findOrCreate({
+                where: {
+                    businessId: reviewInfo.businessId,
+                    reviewHash: reviewHash,
+                },
+                defaults: {
+                    ...reviewInfo,
+                    reviewHash: reviewHash,
+                },
+            });
+
+            if (!isCreated) {
+                console.log("\n[WEBSCRAPER ExtractReviewInfo] - Review already exist on DB, crawler will stop.");
                 shouldContinue = false;
                 break;
             }
 
-            console.log("\n[WEBSCRAPER ExtractReviewInfo] - Review information succefully aquired: ", reviewInfo);
-            const review = await Reviews.create({ ...reviewInfo, reviewHash });
-            console.log("[WEBSCRAPER ExtractReviewInfo] - Added new review to the database.", review.dataValues)
+            console.log("\n[WEBSCRAPER ExtractReviewInfo] - New review added to the database.", review.dataValues)
         }
         await page.waitForTimeout(1000)
     }
+
 }
