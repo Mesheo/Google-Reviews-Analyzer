@@ -11,7 +11,6 @@ module.exports = async function reviewScraper(page, sequelize, businessId) {
     const reviewsSelector = '.MyEned .wiI7pd'
     await page.waitForSelector(reviewsSelector, { visible: true });
 
-
     let shouldContinue = true;
     const Reviews = reviewsCreationFunction(sequelize, Sequelize)
 
