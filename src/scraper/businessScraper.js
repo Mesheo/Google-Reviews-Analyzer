@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const businessCreationFunction = require('../../models/business');
+const hashGenerator = require("../utils/hashGenerator");
 const Sequelize = require('sequelize');
 
 module.exports = async function extractBusinessInfo(page, sequelize) {
@@ -41,9 +42,22 @@ module.exports = async function extractBusinessInfo(page, sequelize) {
         ratingsAverage,
         numberOfReviews,
     }
-    console.log("[WEBSCRAPER - Business Scraper] Data Succesfully fetched: ", businessInfo);
+    console.log("\n[WEBSCRAPER Business Scraper] - Business Data Succesfully fetched: ", businessInfo);
+    const businessHash = hashGenerator(businessInfo);
 
-    const business = await Business.create(businessInfo);
+    const [business, isCreated] = await Business.findOrCreate({
+        where: {
+            name: businessInfo.name,
+            businessHash: businessHash,
+        },
+        defaults: {
+            ...reviewInfo,
+            businessHash,
+        },
+    });
+
+    if(isCreated) console.log("Business already exist on DB");
     console.log("[WEBSCRAPER - Business Scraper] Data Succesfully saved: ", business.dataValues);
+
     return business
 }
