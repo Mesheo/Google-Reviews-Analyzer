@@ -1,17 +1,7 @@
 const cheerio = require('cheerio');
-const crypto = require('crypto');
 const reviewsCreationFunction = require('../../models/reviews');
 const Sequelize = require('sequelize');
-
-function createReviewHash(reviewInfo) {
-    const reviewData = `${reviewInfo.author}${reviewInfo.stars}${reviewInfo.publishedAt}${reviewInfo.reviewText}${reviewInfo.hasPhoto}`;
-
-    const hash = crypto.createHash('sha256');
-    hash.update(reviewData);
-    const reviewHash = hash.digest('hex');
-
-    return reviewHash;
-}
+const hashGenerator = require("../utils/hashGenerator");
 
 module.exports = async function reviewScraper(page, sequelize, businessId) {
     let shouldContinue = true;
@@ -42,7 +32,7 @@ module.exports = async function reviewScraper(page, sequelize, businessId) {
                 businessId,
             }
             console.log("\n[WEBSCRAPER ExtractReviewInfo] - Review data fetched susccefully", reviewInfo)
-            const reviewHash = createReviewHash(reviewInfo)
+            const reviewHash = hashGenerator(reviewInfo)
 
             const [review, isCreated] = await Reviews.findOrCreate({
                 where: {
