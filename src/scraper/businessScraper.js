@@ -3,7 +3,7 @@ const businessCreationFunction = require('../../models/business');
 const hashGenerator = require("../utils/hashGenerator");
 const Sequelize = require('sequelize');
 
-module.exports = async function extractBusinessInfo(page, sequelize) {
+module.exports = async function businessScraper(page, sequelize) {
     const Business = businessCreationFunction(sequelize, Sequelize);
 
     const topInfoDiv = await page.$eval('.TIHn2', (element) => element.innerHTML);
@@ -51,12 +51,12 @@ module.exports = async function extractBusinessInfo(page, sequelize) {
             businessHash: businessHash,
         },
         defaults: {
-            ...reviewInfo,
+            ...businessInfo,
             businessHash,
         },
     });
 
-    if(isCreated) console.log("Business already exist on DB");
+    if(!isCreated) console.log("\n[WEBSCRAPER - Business Scraper] Business already exist on DB!");
     console.log("[WEBSCRAPER - Business Scraper] Data Succesfully saved: ", business.dataValues);
 
     return business

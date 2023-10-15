@@ -19,7 +19,6 @@ async function scraper(url) {
 		await page.click(avaliacoesSelector);
 		const reviewsSelector = '.MyEned .wiI7pd'
 		await page.waitForSelector(reviewsSelector, { visible: true });
-		console.log("!!VOU entrar no review scraper")
 		await reviewScraper(page, dbClient.sequelize, businessId);
 	} catch (e) {
 		console.error("Error occurred: ", e);
