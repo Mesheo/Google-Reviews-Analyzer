@@ -1,18 +1,20 @@
 const businessScraper = require('../scrapers/businessScraper')
 const reviewScraper = require('../scrapers/reviewScraper')
 const dbClient = require('../database/db');
-const chromium = require('chrome-aws-lambda');
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 
 module.exports = async function runScraper(url) {
 	try {
 		dbClient.connect();
-
-		const browser = await chromium.puppeteer
+		a = await chromium.executablePath();
+		console.log("\n[RUNSCRAPER] - chromium.executablePath: ", a)
+		const browser = await puppeteer
         .launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: chromium.headless
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
         });
 		const page = await browser.newPage();
 		await page.goto(url);
