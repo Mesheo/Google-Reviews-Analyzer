@@ -1,0 +1,18 @@
+{
+    "Records": [
+        {
+            "messageId": "b181cab2-af65-4dbc-89a8-88d1d1221dbd",
+            "receiptHandle": "AQEBWg6zh33yH2FCklyN0/XUA1OYwh9GCA6Gfhy6P+xh8lDPb4SJLTLkSB7GbqXPFOD8qqFpuEDQ4fbzFWxNmXVeTZE2isAmtSWGlZqjKg9u9U7mrFNMDtIBvxbaweZovzaQCnslNuZorkDs9IMFBmi4pQTbYyaxX376Q/7UXLnLS/eeMQdr9b4oTU9wyRMx0frqPHHnwTOnOAO+gfIag6JEacL/EPc3iBu9/nLcw4LpVCOOUlaE2FvKUjxawtAyDAzHI/Sb8DNzA5kBZ3S9JB4EeMnsblIzwv72wJo7IlOB8ZU=",
+            " body": {
+                "url": "linkdozap",
+                "requestId": 3
+            },
+            "attributes": [],
+            "messageAttributes": {},
+            "md5OfBody": "358f361af5cf84b450a130c68b8a3f9c",
+            " eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:sa-east-1:521101151519:scrape-request-queue.fifo",
+            "awsRegion": "sa-east-1"
+        }
+    ]
+}

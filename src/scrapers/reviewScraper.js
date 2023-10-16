@@ -5,6 +5,7 @@ const reviewsCreationFunction = require('../../models/reviews');
 
 
 module.exports = async function reviewScraper(page, dbClient, businessId) {
+    console.log("[ReviewScraper] Starting to collect review Info")
     const Reviews = reviewsCreationFunction(dbClient, Sequelize)
 
     const avaliacoesSelector = '.RWPxGd button:nth-child(2)';

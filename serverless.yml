@@ -11,22 +11,22 @@ provider:
 functions:
   scrapeRequest:
     timeout: 30
-    memorySize: 1024
+    memorySize: 128
     handler: src/functions/scrapeRequest.handler
     events:
       - httpApi:
           path: /scrapeRequest
           method: get
-  api:
-    timeout: 30
+
+  runScraper:
+    timeout: 90
     memorySize: 1024
-    handler: index.handler
+    handler: src/functions/runScraper.handler
     events:
       - sqs: arn:aws:sqs:sa-east-1:521101151519:scrape-request-queue.fifo
       - httpApi:
           path: /
           method: get
-  
 
 resources:
   Resources:
@@ -37,4 +37,4 @@ resources:
         ContentBasedDeduplication: true
         FifoQueue: true
         VisibilityTimeout: 150
-        DelaySeconds: 0
+        DelaySeconds: 5

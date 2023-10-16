@@ -12,7 +12,7 @@ module.exports.handler = async (event) => {
         status: "pending"
     }
     const scrapeRequest = await ScrapeRequests.create(scrapeRequestInfo);
-    console.log("[HANDLER] - URL received. Scrape request has successfully sended to queue", scrapeRequest)
+    console.log("[ScrapeRequest HANDLER] - URL received. Scrape request has successfully sended to queue", scrapeRequest)
 
     return {
         statusCode: 200,
