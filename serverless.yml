@@ -8,7 +8,6 @@ provider:
   runtime: nodejs18.x
   region: sa-east-1
 
-
 functions:
   api:
     timeout: 30

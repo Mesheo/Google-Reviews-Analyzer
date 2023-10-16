@@ -38,7 +38,7 @@ module.exports = async function reviewScraper(page, sequelize, businessId) {
                 hasPhoto,
                 businessId,
             }
-            console.log("\n[WEBSCRAPER Review Scraper] - Review Data Succesfully fetched: ", reviewInfo)
+            console.log("\n[REVIEW SCRAPER] - Review Data Succesfully fetched: ", reviewInfo)
             const reviewHash = hashGenerator(reviewInfo)
 
             const [review, isCreated] = await Reviews.findOrCreate({
@@ -53,14 +53,12 @@ module.exports = async function reviewScraper(page, sequelize, businessId) {
             });
 
             if (!isCreated) {
-                console.log("\n[WEBSCRAPER ExtractReviewInfo] - Review already exist on DB, crawler will stop.");
+                console.log("\n[REVIEW SCRAPER] - Review already exist on DB, crawler will stop.");
                 shouldContinue = false;
                 break;
             }
 
-            console.log("\n[WEBSCRAPER ExtractReviewInfo] - New review added to the database.", review.dataValues)
+            console.log("\n[REVIEW SCRAPER] - New review added to the database.", review.dataValues)
         }
-        await page.waitForTimeout(1000)
     }
-
 }

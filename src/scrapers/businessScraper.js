@@ -43,7 +43,7 @@ module.exports = async function businessScraper(page, sequelize) {
         ratingsAverage,
         numberOfReviews,
     }
-    console.log("\n[WEBSCRAPER Business Scraper] - Business Data Succesfully fetched: ", businessInfo);
+    console.log("\n[BUSINESS SCRAPER] - Business Data Succesfully fetched: ", businessInfo);
     const businessHash = hashGenerator(businessInfo);
 
     const [business, isCreated] = await Business.findOrCreate({
@@ -57,8 +57,8 @@ module.exports = async function businessScraper(page, sequelize) {
         },
     });
 
-    if(!isCreated) console.log("\n[WEBSCRAPER - Business Scraper] Business already exist on DB!");
-    console.log("[WEBSCRAPER - Business Scraper] Data Succesfully saved: ", business.dataValues);
+    if(!isCreated) console.log("\n[BUSINESS SCRAPER] Business already exist on DB!");
+    console.log("[BUSINESS SCRAPER] Data Succesfully saved: ", business.dataValues);
 
     return business
 }
