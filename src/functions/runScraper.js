@@ -7,6 +7,8 @@ const chromium = require("@sparticuz/chromium");
 module.exports = async function runScraper(url) {
 	try {
 		dbClient.connect();
+		console.log("QUE PORAAA EH O CHROMIUMM: ", chromium)
+
 		a = await chromium.executablePath();
 		console.log("\n[RUNSCRAPER] - chromium.executablePath: ", a)
 		const browser = await puppeteer
@@ -14,7 +16,7 @@ module.exports = async function runScraper(url) {
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
+            headless: false,
         });
 		const page = await browser.newPage();
 		await page.goto(url);

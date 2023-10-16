@@ -11,15 +11,8 @@ functions:
   api:
     timeout: 30
     handler: index.handler
-    layers:
-      - !Ref sparticuzChromium
     memorySize: 1024
     events:
       - httpApi:
           path: /
           method: get
-
-layers:
-  sparticuzChromium:
-    package:
-      artifact: chromium-v117.0.0-layer.zip 
