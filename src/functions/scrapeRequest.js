@@ -1,26 +1,50 @@
 const dbClient = require('../database/db')
 const Sequelize = require('sequelize');
 const scrapeRequestsCreationFunction = require('../../models/scraperequests');
+const { SendMessageCommand, SQSClient } = require("@aws-sdk/client-sqs")
+
+const client = new SQSClient({});
+const SQS_QUEUE_URL = "shttps://sqs.sa-east-1.amazonaws.com/521101151519/scrape-request-queue.fifo"
+
+async function queueSendMessage(sqsQueueUrl , scrapeRequestInfo) {
+    console.log("[queueSendMessage] - Vamos enviar a fila")
+    const command = new SendMessageCommand({
+        QueueUrl: sqsQueueUrl,
+        MessageGroupId: 1,
+        MessageBody:
+          JSON.stringify(scrapeRequestInfo),
+      });
+    
+      const response = await client.send(command);
+      console.log(response);
+      return response;
+}
 
 module.exports.handler = async (event) => {
     console.log("[ScrapeRequest HANDLER] - Event: ", event)
+    const { url } = JSON.parse(event.body)
+
     await dbClient.connect();
     const ScrapeRequests = scrapeRequestsCreationFunction(dbClient.sequelize, Sequelize)
 
     const scrapeRequestInfo = {
-        url: "https://www.google.com.br/maps/place/Nema+Padaria+-+Visconde+de+Piraj%C3%A1/@-22.9841517,-43.2154292,17z/data=!3m2!4b1!5s0x9bd50757e02857:0x35aa6a9b37f5d532!4m6!3m5!1s0x9bd58a0cdc1487:0x4c1eb56d62eb469b!8m2!3d-22.9841517!4d-43.2128543!16s%2Fg%2F11j20tdp78?hl=pt/@-22.8318517,-43.0292044,15z&entry=ttu",
-        status: "pending"
+        url,
+        status: "pending",   
     }
-    const scrapeRequest = await ScrapeRequests.create(scrapeRequestInfo);
-    console.log("[ScrapeRequest HANDLER] - URL received. Scrape request has successfully sended to queue", scrapeRequest)
+    const { dataValues : { requestId } } = await ScrapeRequests.create(scrapeRequestInfo);
+    
+    const response = await queueSendMessage(SQS_QUEUE_URL, {...scrapeRequestInfo, requestId})
+
+    console.log("[ScrapeRequest HANDLER] - URL received. Scrape request has successfully sended to queue", { requestId} )
 
     return {
         statusCode: 200,
         body: JSON.stringify(
             {
                 status: 'pending',
-                message: `URL received. Scrapper has successfully started to run.`,
-                input: event,
+                message: `URL received. Request has successfully sended to queue.`,
+                url,
+                response
             },
         ),
     };

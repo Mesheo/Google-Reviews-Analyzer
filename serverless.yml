@@ -13,10 +13,18 @@ functions:
     timeout: 30
     memorySize: 128
     handler: src/functions/scrapeRequest.handler
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueUrl
+      Resource: arn:aws:sqs:sa-east-1:521101151519:scrape-request-queue.fifo
     events:
       - httpApi:
           path: /scrapeRequest
-          method: get
+          method: post
 
   runScraper:
     timeout: 90
@@ -38,3 +46,9 @@ resources:
         FifoQueue: true
         VisibilityTimeout: 150
         DelaySeconds: 5
+
+# Outputs:
+#   ScrapeRequestQueueUrl:
+#     Value: arn:aws:sqs:sa-east-1:521101151519:scrape-request-queue.fifo
+#     Export:
+#       Name: ScrapeRequest-QueueUrl
