@@ -9,6 +9,14 @@ provider:
   region: sa-east-1
 
 functions:
+  scrapeRequest:
+    timeout: 30
+    memorySize: 1024
+    handler: src/functions/scrapeRequest.handler
+    events:
+      - httpApi:
+          path: /scrapeRequest
+          method: get
   api:
     timeout: 30
     memorySize: 1024

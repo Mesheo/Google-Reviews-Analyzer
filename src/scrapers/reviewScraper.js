@@ -1,9 +1,11 @@
 const cheerio = require('cheerio');
-const reviewsCreationFunction = require('../../models/reviews');
 const hashGenerator = require("../utils/hashGenerator");
 const Sequelize = require('sequelize');
+const reviewsCreationFunction = require('../../models/reviews');
 
-module.exports = async function reviewScraper(page, sequelize, businessId) {
+
+module.exports = async function reviewScraper(page, dbClient, businessId) {
+    const Reviews = reviewsCreationFunction(dbClient, Sequelize)
 
     const avaliacoesSelector = '.RWPxGd button:nth-child(2)';
     await page.waitForSelector(avaliacoesSelector, { visible: true });
@@ -12,7 +14,6 @@ module.exports = async function reviewScraper(page, sequelize, businessId) {
     await page.waitForSelector(reviewsSelector, { visible: true });
 
     let shouldContinue = true;
-    const Reviews = reviewsCreationFunction(sequelize, Sequelize)
 
     const reviewSelector = '.jftiEf.fontBodyMedium';
     await page.waitForSelector(reviewSelector);
