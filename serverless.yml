@@ -17,3 +17,15 @@ functions:
       - httpApi:
           path: /
           method: get
+  
+
+resources:
+  Resources:
+    ScrapeRequestQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: scrape-request-queue.fifo
+        ContentBasedDeduplication: true
+        FifoQueue: true
+        VisibilityTimeout: 30
+        DelaySeconds: 0
