@@ -7,10 +7,7 @@ const chromium = require("@sparticuz/chromium");
 module.exports = async function runScraper(url) {
 	try {
 		dbClient.connect();
-		console.log("QUE PORAAA EH O CHROMIUMM: ", chromium)
 
-		a = await chromium.executablePath();
-		console.log("\n[RUNSCRAPER] - chromium.executablePath: ", a)
 		const browser = await puppeteer
         .launch({
             args: chromium.args,

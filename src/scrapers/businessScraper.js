@@ -11,17 +11,9 @@ module.exports = async function businessScraper(page, sequelize) {
     const $ = cheerio.load(topInfoDiv);
 
     const name = $('h1.DUwDvf').text();
-    console.log("\n[BUSINESS SCRAPER] Peguei o nome da loja: ", name)
-
     const ratingsAverage = parseFloat($('div.F7nice span[aria-hidden="true"]').text().replace(',', '.'));
     const numberOfReviews = parseInt($('div.F7nice span[aria-label]').text().replace(/[()]/g, ''), 10);
     const category = $('div.fontBodyMedium button.DkEaL').text();
-
-    console.log("[BUSINESS SCRAPER] Peguei tudo do topInfoDiv: ", {
-        ratingsAverage,
-        numberOfReviews,
-        category,
-    })
 
     const botInfoDiv = await page.$eval(`div[aria-label="Informações de ${name}"]`, (element) => element.innerHTML);
     const $$ = cheerio.load(botInfoDiv);

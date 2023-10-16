@@ -26,13 +26,10 @@ const sequelize = new Sequelize(
 );
 
 async function connect() {
-    const a = process.env.DATABASE
-    const b = process.env.USERNAME 
-    console.log("[DATABASE] - Env Variables: ",{ a, b})
     try {
         await sequelize.authenticate();
         await sequelize.sync();
-        console.log('Connection with DB has been established successfully!');
+        console.log('[DATABASE] - Connection with DB has been established successfully!');
     } catch (error) {
         console.error('[Database] - Unable to connect to the database:', error);
     }
