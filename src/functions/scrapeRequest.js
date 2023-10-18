@@ -32,7 +32,6 @@ module.exports.handler = async (event) => {
         status: "pending",   
     }
     const { dataValues : { requestId } } = await ScrapeRequests.create(scrapeRequestInfo);
-    
     const response = await queueSendMessage(SQS_QUEUE_URL, {...scrapeRequestInfo, requestId})
 
     console.log("[ScrapeRequest HANDLER] - URL received. Scrape request has successfully sended to queue", { requestId} )
