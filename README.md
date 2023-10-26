@@ -1,5 +1,5 @@
 # Useful Commands
-if you clone this repository by personal interest the following commands will for sure make your life easier throughout the usage and adaptation of the application
+if you clone this repository by personal interest the following commands will for sure make your life easier throughout the usage and adaptation of the code
 ## Serverless related
 - Deploy a new version of the code to AWS: `sls deploy`
 - Watch the logs: `sls logs -f function_name -s stage`

@@ -6,8 +6,10 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Reviews extends Model {
     static associate(models) {
-      Reviews.belongsTo(models.Business, { foreignKey: 'businessId' });
-
+      Reviews.belongsTo(models.Business, {
+        foreignKeyConstraint: true
+        , onDelete: 'cascade'
+      });
     }
   }
   Reviews.init({
