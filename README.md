@@ -1,7 +1,14 @@
 # Useful Commands
+if you clone this repository to use for your interestes the following terminal commands will for sure make your life easier thrghout the usage and adaptation of the code
+## Serverless related
 - Deploy a new version of the code to AWS: `sls deploy`
 - Watch the logs: `sls logs -f function_name -s stage`
-- Run the code locally: `sls invoke local -f function_name`
+- Run the code locally: `serverless invoke local -function function_name`
+
+## Database Related
+- Create a migration: `npx sequelize-cli migration:generate --name migration_name`
+- Run migration: `npx sequelize-cli db:migrate`
+- Undo the most recent migration: `npx sequelize-cli db:migrate:undo`
 
 # Serverless Framework Node HTTP API on AWS
 

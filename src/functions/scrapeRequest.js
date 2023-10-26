@@ -2,7 +2,6 @@ const dbClient = require('../database/db')
 const Sequelize = require('sequelize');
 const scrapeRequestsCreationFunction = require('../../models/scraperequests');
 const { SendMessageCommand, SQSClient } = require("@aws-sdk/client-sqs")
-
 const client = new SQSClient({});
 const SQS_QUEUE_URL = "shttps://sqs.sa-east-1.amazonaws.com/521101151519/scrape-request-queue.fifo"
 
