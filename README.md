@@ -1,5 +1,7 @@
-# THIS IS THE DEFAULT SERVERLESS README 
-* I will clean up and document the project better soon
+# Useful Commands
+- Deploy a new version of the code to AWS: `sls deploy`
+- Watch the logs: `sls logs -f ${function_name} -s ${stage}`
+- Run the code locally: `sls invoke local -f ${function_name}`
 
 # Serverless Framework Node HTTP API on AWS
 
